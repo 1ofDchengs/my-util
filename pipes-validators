@@ -1,0 +1,70 @@
+@Pipe({
+  name: 'stripHtml',
+})
+export class StripHtmlPipe implements PipeTransform {
+  transform(value: string): any {
+    return value.replace(/<.*?>/g, ''); // replace tags
+  }
+}
+
+@Pipe({
+  name: 'noComma',
+})
+export class NoCommaPipe implements PipeTransform {
+  transform(val: number): string {
+    if (val !== null) {
+      // here we just remove the commas from value
+      return val.toString().replace(/,/g, '');
+    } else {
+      return '';
+    }
+  }
+}
+
+export class FormValidator {
+  isNumeric(event): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+
+  isAlpha(event): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return true;
+    }
+    return false;
+  }
+
+  isNumericPasted(event): boolean {
+    const clipboardData = event.clipboardData.getData('text');
+    return (
+      Number.isInteger(parseInt(clipboardData)) &&
+      Number.isInteger(parseFloat(clipboardData)) &&
+      !isNaN(clipboardData) &&
+      !clipboardData.includes(',')
+    );
+  }
+
+  isNaturalNumberPasted(event): boolean {
+    const clipboardData = event.clipboardData.getData('text');
+    return (
+      Number.isInteger(parseInt(clipboardData)) &&
+      parseInt(clipboardData) > 0 &&
+      !isNaN(clipboardData) &&
+      !clipboardData.includes('+') &&
+      !clipboardData.includes(',')
+    );
+  }
+
+  isMobileNumber(mobileNumber) {
+    const pattern = /^(09)[0-9]{9}/;
+    return pattern.test(mobileNumber);
+  }
+
+  minMaxValidator(min, max, ctrl) {
+    return ctrl >= min && ctrl <= max;
+  }
+}
